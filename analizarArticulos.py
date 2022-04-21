@@ -1,1 +1,1 @@
-print('Programa analizarArticulos.py')
+print('------------ analizarArticulos.py ------------')

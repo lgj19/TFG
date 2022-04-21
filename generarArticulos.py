@@ -1,0 +1,1 @@
+print('Programa generarArticulos.py')

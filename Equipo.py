@@ -12,5 +12,7 @@ class Equipo:
         self.nombre = nombre
         self.temporada = temporada
 
+    def __str__(self):
+        cadena = "";
 
     

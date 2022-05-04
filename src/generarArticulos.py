@@ -1,17 +1,55 @@
 print('------------ generarArticulos.py ------------')
 
-import sqlite3
-import Jugador
-import Partido
-import Equipo
+import pruebaMysql as MySQL
 
-ID_PARTIDO = 1
-ANYO_PARTIDO = 2016
-ID_EQ_L = 1
-ID_EQ_V = 11
+TEMPORADA = 2010
+TIPO_PARTIDO = "regular"
+ID_PARTIDO = -1;
+EQUIPO_LOCAL = 20
+EQUIPO_VISITANTE = 10
 
-conn = sqlite3.connect('database.sqlite')
+db = MySQL.database()
+idPartido = 0
 
+print("Equipo Local:")
+print(db.getEquipo(EQUIPO_LOCAL, TEMPORADA))
+
+print("\n\nEquipo Visitante: ")
+print(db.getEquipo(EQUIPO_VISITANTE, TEMPORADA))
+
+print("\n\nPartido:")
+for p in db.getPartido(EQUIPO_LOCAL, EQUIPO_VISITANTE, TEMPORADA):
+  ID_PARTIDO = p[0]
+  print(p)
+
+print("\n\nJugadores locales:")
+for o in db.getJugadores(EQUIPO_LOCAL, ID_PARTIDO):
+  print(o)
+  
+print("\n\nJugadores visitantes:") 
+for o in db.getJugadores(EQUIPO_VISITANTE, ID_PARTIDO):
+  print(o)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
 print("El partido: ")
 cursor = conn.execute("SELECT * FROM game WHERE id=%d"%ID_PARTIDO)
 for row in cursor:
@@ -37,7 +75,4 @@ print("Jugadores del equipo local: ")
 
 print("Jugadores del equipo visitante: ")
 
-
-
-
-conn.close()
+"""

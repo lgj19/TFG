@@ -1,6 +1,9 @@
-print('------------ generarArticulos.py ------------')
+print('\n------------ generarArticulos.py ------------\n')
 
 import pruebaMysql as MySQL
+import entities.Equipo as Equipo
+import entities.Jugador as Jugador
+import entities.Partido as Partido
 
 TEMPORADA = 2010
 TIPO_PARTIDO = "regular"
@@ -11,24 +14,41 @@ EQUIPO_VISITANTE = 10
 db = MySQL.database()
 idPartido = 0
 
-print("Equipo Local:")
-print(db.getEquipo(EQUIPO_LOCAL, TEMPORADA))
+equipoLocal = []
+equipoVisitante = []
+partido = []
+JugadoresLocales = []
+JugadoresVisitantes = []
 
-print("\n\nEquipo Visitante: ")
-print(db.getEquipo(EQUIPO_VISITANTE, TEMPORADA))
+#recuperar el equipo local
+for row in db.getEquipo(EQUIPO_LOCAL, TEMPORADA):
+  equipoLocal = Equipo.Equipo(row)
+  print(equipoLocal)
 
-print("\n\nPartido:")
-for p in db.getPartido(EQUIPO_LOCAL, EQUIPO_VISITANTE, TEMPORADA):
-  ID_PARTIDO = p[0]
-  print(p)
+#Recuperar el equipo visitante
+for row in db.getEquipo(EQUIPO_VISITANTE, TEMPORADA):
+  equipoVisitante = Equipo.Equipo(row)
+  print(equipoVisitante)
 
-print("\n\nJugadores locales:")
-for o in db.getJugadores(EQUIPO_LOCAL, ID_PARTIDO):
-  print(o)
+#Recuperar partido
+for row in db.getPartido(EQUIPO_LOCAL, EQUIPO_VISITANTE, TEMPORADA):
+  partido = Partido.Partido(row)
+  ID_PARTIDO = partido.id
+  print(partido)
+
+#Recuperar los jugadores del equipo local
+print(" ---------------- JUGADORES DEL EQUIPO LOCAL ----------------\n")
+for row in db.getJugadores(EQUIPO_LOCAL, ID_PARTIDO):
+  jugador = Jugador.Jugador(row)
+  JugadoresLocales.append(jugador)
+  print(jugador)
   
-print("\n\nJugadores visitantes:") 
-for o in db.getJugadores(EQUIPO_VISITANTE, ID_PARTIDO):
-  print(o)
+#Recuperar los jugadores del equipo visitante
+print("\n---------------- JUGADORES DEL EQUIPO VISITANTE ----------------\n")
+for row in db.getJugadores(EQUIPO_VISITANTE, ID_PARTIDO):
+  jugador = Jugador.Jugador(row)
+  JugadoresVisitantes.append(jugador)
+  print(jugador)
 
 
 

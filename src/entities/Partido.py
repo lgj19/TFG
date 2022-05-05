@@ -22,30 +22,49 @@ class Partido:
   
   def __init__():
     return     
-  def __init__(self, idPartido, idEqL, idEqV, fase, jornada, pab,
-    pub, fec,ptl, ptv, p1l, p1v, p2l, p2v, p3l, p3v, p4l, p4v, pel, pev):
+  def __init__(self, row):
       
-    self.id = idPartido
-    self.idEquipoLocal = idEqL
-    self.idEquipoVisitante = idEqV
-    self.faseCompeticion = fase
-    self.jornada = jornada
-    self.pabellon = pab
-    self.publico = pub
-    self.fechaPartido = fec
-    self.puntosTotalLocal = ptl
-    self.puntosTotalVisitante = ptv
-    self.puntos1QLocal = p1l
-    self.puntos1QVisitante = p1v
-    self.puntos2QLocal = p2l
-    self.puntos2QVisitante = p2v
-    self.puntos3QLocal = p3l
-    self.puntos3QVisitante = p3v
-    self.puntos4QLocal = p4l
-    self.puntos4QVisitante = p4v
-    self.puntosExtraLocal = pel
-    self.puntosExtraVisitante = pev
+    self.id = row[0]
+    self.idEquipoLocal = row[2]
+    self.idEquipoVisitante = row[3]
+    self.faseCompeticion = row[4]
+    self.jornada = row[6]
+    self.pabellon = row[7]
+    self.publico = row[8]
+    self.fechaPartido = row[9]
+    self.puntosTotalLocal = row[10]
+    self.puntosTotalVisitante = row[11]
+    self.puntos1QLocal = row[12]
+    self.puntos1QVisitante = row[13]
+    self.puntos2QLocal = row[14]
+    self.puntos2QVisitante = row[15]
+    self.puntos3QLocal = row[16]
+    self.puntos3QVisitante = row[17]
+    self.puntos4QLocal = row[18]
+    self.puntos4QVisitante = row[19]
+    self.puntosExtraLocal = row[20]
+    self.puntosExtraVisitante = row[21]
     
+  def __str__(self):
+      return '''Datos del partido:
+      ID: {}
+      ID del equipo local: {}
+      ID del equipo visitnte: {}
+      fase: {}
+      jornada: {}
+      pabellón: {}
+      público: {}
+      fecha del partido: {}
+      puntos del equipo local:
+        [totales: {}, Q1: {}, Q2: {}, Q3: {}, Q4: {}, QE: {}]
+      puntos del equipo visitante:
+        [totales: {}, Q1: {}, Q2: {}, Q3: {}, Q4: {}, QE: {}]
+      '''.format(self.id, self.idEquipoLocal, self.idEquipoVisitante, self.faseCompeticion, 
+                 self.jornada, self.pabellon, self.publico, self.fechaPartido,
+                 self.puntosTotalLocal, self.puntos1QLocal, self.puntos2QLocal,
+                 self.puntos3QLocal, self.puntos4QLocal, self.puntosExtraLocal, 
+                 self.puntosTotalVisitante, self.puntos1QVisitante, self.puntos2QVisitante,
+                 self.puntos3QVisitante, self.puntos4QVisitante, self.puntosExtraVisitante)
     
     
   

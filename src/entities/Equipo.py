@@ -5,14 +5,21 @@ class Equipo:
     nombre = "Nombre completo del equipo"
     temporada = 0000
     
-    def __init__(self, id, siglas, anyo, nombre, temporada):
-        self.id = id
-        self.siglas = siglas
-        self.anyoFundacion = anyo
-        self.nombre = nombre
-        self.temporada = temporada
+    def __init__(self, row):
+        self.id = row[1]  
+        self.nombre = row[2]
+        self.temporada = row[3]
+        self.siglas = row[5]
+        self.anyoFundacion = row[6]
+        
 
     def __str__(self):
-        cadena = "";
+        return '''Equipo: {} 
+        id: {} 
+        siglas: {} 
+        año de fundación: {}
+        temporada del nombre: {}
+        '''.format(self.nombre, self.id, self.siglas, self.anyoFundacion, self.temporada)
+        
 
     

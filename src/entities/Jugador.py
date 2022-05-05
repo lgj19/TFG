@@ -1,8 +1,12 @@
 class Jugador:
     id = 0
     esEntrenador = False
+    esArbitro = False
+    esTitular = False
     nombre = "Nombre del jugador"
-    nombreCompleto = "Nombre completo del jugador"
+    nombreCompleto = "Nombre completo"
+    primerApellido = "Primer apellido"
+    segundoApellido = "Segundo apellido"
     nacionalidad = "XXX"
     lugarNacimiento = "Ciudad (Provincia/Estado)"
     fechaNacimiento = "YYYY-MM-DD HH:MM:SS"
@@ -13,7 +17,6 @@ class Jugador:
     twitter = "Apodo de twitter"
     
     dorsal = 0
-    titular = False
     minutos = 0
     puntosTotales = 0
     tirosDe2 = 0
@@ -36,44 +39,55 @@ class Jugador:
     valoracion = 0
     masMenos = 0
     
-    def __init__(self, id, esEnt, n, nC, nacio, lugNac, fecNac, pos, alt, pes, debut, twitter):
-        self.id = id
-        self.esEntrenador = esEnt
-        self.nombre = n
-        self.nombreCompleto = nC
-        self.nacionalidad = nacio
-        self.lugarNacimiento = lugNac
-        self.fechaNacimiento = fecNac
-        self.posicion = pos
-        self.altura = alt
-        self.peso = pes
-        self.debutACB = debut
-        self.twitter = twitter
+    def __init__(self, row):
+        self.id = row[3]
+        self.nombre = row[4]
+        self.primerApellido = row[5]
+        self.segundoApellido = row[6]
+        self.dorsal = row[7]
+        self.esEntrenador = row[8]
+        self.esArbitro = row[9]
+        self.esTitular = row[10]
+        self.minutos = row[11]/60
+        self.puntosTotales = row[12]
+        self.intentosDe2 = row[13]
+        self.tirosDe2 = row[14]
+        self.intentosDe3 = row[15]
+        self.tirosDe3 = row[16]
+        self.intentosDe1 = row[17]
+        self.tirosDe1 = row [18]
+        self.rebotesOfensivos = row[20]
+        self.rebotesDefensibos = row[19]
+        self.asistencias = row[21]
+        self.robos = row[22]
+        self. perdidas = row[23]
+        self.contraataques = row[24]
+        self.tapones = row[25]
+        self.taponesRecibidos = row[26]
+        self.mates = row[27]
+        self.faltas = row[28]
+        self.faltasRecibidas = row[29]
+        self.valoracion = row[31]
+        self.masMenos = row[30]
+        self.nombreCompleto = row[36]
+        self.nacionalidad = row[37]
+        self.lugarNacimiento = row[38]
+        self.fechaNacimiento = row[39]
+        self.posicion = row[40]
+        self.altura = row[41]
+        self.peso = row[42]
+        self.debutACB = row[44]
+        self.twitter = row[45]
         
-    def agregarDatosPartido(self, dorsal, titu, segs, pt, p2, pi2, p3, pi3, p1, pi1, rO, rD, asis,
-                            rob, perd, contras, tap, tapR, mat, faltas, fR, val, mm):
-        self.dorsal = dorsal
-        self.titular = titu
-        self.minutos = segs / 60;
-        self.puntosTotales = pt
-        self.tirosDe2 = p2
-        self.intentosDe2 = pi2
-        self.tirosDe3 = p3
-        self.intentosDe3 = pi3
-        self.tirosDe1 = p1
-        self.intentosDe1 = pi1
-        self.rebotesOfensivos = rO
-        self.rebotesDefensibos = rD
-        self.asistencias = asis
-        self.robos = rob
-        self. perdidas = perd
-        self.contraataques = contras
-        self.tapones = tap
-        self.taponesRecibidos = tapR
-        self.mates = mat
-        self.faltas = faltas
-        self.faltasRecibidas = fR
-        self.valoracion = val
-        self.masMenos = mm
+    def __str__(self):
+        return '''Información del jugador:
+        ID: {}
+        Es entrenador: {},
+        Nombre completo: {},
+        Posición: {},
+        Twitter: {}
+        
+    
+        '''.format(self.id, self.esEntrenador, self.nombreCompleto, self.posicion, self.twitter)
         
     

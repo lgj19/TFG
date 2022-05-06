@@ -61,7 +61,7 @@ class database:
   
   def getEquiposPorTemporada(self, temporada):
     query = ''' SELECT *
-      FROM teamName JOIN team, teamName ON team.id = team_id
+      FROM teamName JOIN team ON team.id = team_id
       WHERE season={}
     '''.format(temporada)
     self.cursor.execute(query);

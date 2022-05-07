@@ -3,7 +3,7 @@ class Plantilla:
     es_semilla = False
     titulo = "Título de la plantilla"
     parrafos = []
-    
+
     def __init__(self, row):
         self.id = row[0]
         self.semilla = row[1]

@@ -77,6 +77,12 @@ class database:
     self.result = self.cursor.fetchall()
     return self.result
   
+  def getPlantillas(self):
+    query = ''' SELECT * FROM plantilla '''
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
+  
   def getParrafos(self, idPlantilla):
     query = '''SELECT *
       FROM parrafo

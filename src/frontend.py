@@ -1,10 +1,17 @@
 from tkinter import *
 from tkinter.ttk import Combobox
+import entities.Plantilla as Plantilla
 import pruebaMysql as mysql
 import entities.Equipo as Equipo
 
+db = mysql.database()
+equipos = []
+plantillaSelected = Plantilla.Plantilla([-1,False,"nada"])
+TEMPORADAS = ('1994/95', '1995/96', '1996/97', '1997/98', '1998/99', '1999/00', '2000/01', '2001/02', '2002/03',
+              '2003/04', '2004/05', '2005/06', '2006/07', '2007/08', '2008/09', '2009/10', '2010/11', '2011/12',
+              '2012/13', '2013/14', '2014/15', '2015/16', '2016/17')
+
 def agregarEquipos(event):
-    db = mysql.database()
     temporada = tvarTemporada.get()[:4]
     for row in mysql.database.getEquiposPorTemporada(db, temporada):
         equipo = Equipo.Equipo(row)
@@ -16,15 +23,31 @@ def agregarEquipos(event):
     cboxEquipoLocal['values'] = cboxEquipoVisitante['values'] = nombreEquipos
 
 def cargarPlantillasBD():
-    cboxPlantilla['values'] = ('Semilla 1', 'Semilla 1, variante 1', 'Semilla 1, variante 2')
+    plantillas = []
+    nombrePlantillas = []
     
+    for row in mysql.database.getPlantillas(db):
+        plantillas.append(Plantilla.Plantilla(row))
+        
+    for plantilla in plantillas:
+        nombrePlantillas.append(plantilla.titulo)
+        
+    cboxPlantilla['values'] = nombrePlantillas
+
+def seleccionarPlantilla(event):
+    for row in mysql.database.getPlantilla(db, tvarPlantilla.get()):
+        plantillaSelected.id = row[0]
+        plantillaSelected.es_semilla = row[1]
+        plantillaSelected.titulo = row[2]
+    
+    for row in mysql.database.getParrafos(db, plantillaSelected.id):
+        plantillaSelected.parrafos.append(Plantilla.Parrafo(row))
+
 def generarTexto():
-    print("Generando texto...")
+    print(plantillaSelected)
     
-equipos = []
-TEMPORADAS = ('1994/95', '1995/96', '1996/97', '1997/98', '1998/99', '1999/00', '2000/01', '2001/02', '2002/03',
-              '2003/04', '2004/05', '2005/06', '2006/07', '2007/08', '2008/09', '2009/10', '2010/11', '2011/12',
-              '2012/13', '2013/14', '2014/15', '2015/16', '2016/17')
+    
+
 
 ws = Tk()
 ws.geometry("480x400")
@@ -74,6 +97,7 @@ lbl_plantilla = Label(ws, text="Plantilla: ", pady=5, padx=15).grid(row=5, colum
 tvarPlantilla = StringVar()
 cboxPlantilla = Combobox(ws, textvariable=tvarPlantilla, width=35, postcommand=cargarPlantillasBD)
 cboxPlantilla.grid(row=5, column=1)
+cboxPlantilla.bind('<<ComboboxSelected>>', seleccionarPlantilla)
 cboxPlantilla['state'] = 'readonly'
 
 #CheckList párrafos

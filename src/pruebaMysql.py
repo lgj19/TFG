@@ -29,9 +29,9 @@ class database:
       WHERE team.id={} AND season={}
     '''.format(idTeam, season)
     
-    self.cursor.execute(query);
+    self.cursor.execute(query)
     self.result = self.cursor.fetchall()
-    return self.result;
+    return self.result
   
   
   def getJugadores(self, idTeam, idGame):
@@ -40,9 +40,9 @@ class database:
       WHERE p.team_id={} AND p.game_id={}
     '''.format(idTeam, idGame)
     
-    self.cursor.execute(query);
+    self.cursor.execute(query)
     self.result = self.cursor.fetchall()
-    return self.result;
+    return self.result
   
   def getPartido(self, idTeamLocal, idTeamVisi, temporada):
     temporada = '"' + str(temporada) +'%"'
@@ -55,16 +55,35 @@ class database:
          AND competition_phase="regular" AND kickoff_time LIKE {})
     '''.format(idTeamLocal, idTeamVisi, idTeamLocal, idTeamVisi, temporada)
     
-    self.cursor.execute(query);
+    self.cursor.execute(query)
     self.result = self.cursor.fetchall()
-    return self.result;
+    return self.result
   
   def getEquiposPorTemporada(self, temporada):
     query = ''' SELECT *
       FROM teamName JOIN team ON team.id = team_id
       WHERE season={}
     '''.format(temporada)
-    self.cursor.execute(query);
+    self.cursor.execute(query)
     self.result = self.cursor.fetchall()
-    return self.result;
+    return self.result
+  
+  def getPlantilla(self, titulo):
+    query = ''' SELECT *
+      FROM plantilla
+      WHERE titulo = "{}";
+    '''.format(titulo)
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
+  
+  def getParrafos(self, idPlantilla):
+    query = '''SELECT *
+      FROM parrafo
+      WHERE id_plantilla = {}
+    '''.format(idPlantilla)
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
+    
     

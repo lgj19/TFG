@@ -14,6 +14,12 @@ def agregarEquipos(event):
     for equipo in equipos:
         nombreEquipos.append(equipo.nombre)
     cboxEquipoLocal['values'] = cboxEquipoVisitante['values'] = nombreEquipos
+
+def cargarPlantillasBD():
+    cboxPlantilla['values'] = ('Semilla 1', 'Semilla 1, variante 1', 'Semilla 1, variante 2')
+    
+def generarTexto():
+    print("Generando texto...")
     
 equipos = []
 TEMPORADAS = ('1994/95', '1995/96', '1996/97', '1997/98', '1998/99', '1999/00', '2000/01', '2001/02', '2002/03',
@@ -61,6 +67,19 @@ cboxEquipoVisitante['state'] = 'readonly'
 #Sección segunda para seleccionar los párrafos 
 Label(ws, text="Selección de párrafos", font="Georgia 16 bold", pady=30).grid(row=4, column=1)
 
+#Label plantilla
+lbl_plantilla = Label(ws, text="Plantilla: ", pady=5, padx=15).grid(row=5, column=0)
 
+#ComboBox plantilla
+tvarPlantilla = StringVar()
+cboxPlantilla = Combobox(ws, textvariable=tvarPlantilla, width=35, postcommand=cargarPlantillasBD)
+cboxPlantilla.grid(row=5, column=1)
+cboxPlantilla['state'] = 'readonly'
+
+#CheckList párrafos
+
+#Botón de Generar plantilla
+btnGenerarPlantilla = Button( text ="Generar texto", command = generarTexto)
+btnGenerarPlantilla.grid(row=6, column=1, pady=15)
 
 ws.mainloop()

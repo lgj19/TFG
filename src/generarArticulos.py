@@ -4,6 +4,7 @@ import pruebaMysql as MySQL
 import entities.Equipo as Equipo
 import entities.Jugador as Jugador
 import entities.Partido as Partido
+import entities.Plantilla as Plantilla
 
 TEMPORADA = 2010
 TIPO_PARTIDO = "regular"
@@ -49,3 +50,11 @@ for row in db.getJugadores(EQUIPO_VISITANTE, ID_PARTIDO):
   jugador = Jugador.Jugador(row)
   JugadoresVisitantes.append(jugador)
   #print(jugador)
+  
+#Recuperar plantilla:
+TITULO_PLANTILLA = 'Semilla 1'
+for row in db.getPlantilla(TITULO_PLANTILLA):
+  plantilla = Plantilla.Plantilla(row)
+  for row in db.getParrafos(plantilla.id):
+    plantilla.parrafos.append(Plantilla.Parrafo(row))
+  print(plantilla)

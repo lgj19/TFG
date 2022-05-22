@@ -26,7 +26,7 @@ class Jugador:
     tirosDe1 = 0
     intentosDe1 = 0
     rebotesOfensivos = 0
-    rebotesDefensibos = 0
+    rebotesDefensivos = 0
     asistencias = 0
     robos = 0
     perdidas = 0
@@ -57,7 +57,7 @@ class Jugador:
         self.intentosDe1 = row[17]
         self.tirosDe1 = row [18]
         self.rebotesOfensivos = row[20]
-        self.rebotesDefensibos = row[19]
+        self.rebotesDefensivos = row[19]
         self.asistencias = row[21]
         self.robos = row[22]
         self. perdidas = row[23]
@@ -87,7 +87,6 @@ class Jugador:
         Posición: {},
         Twitter: {}
         
-    
         '''.format(self.id, self.esEntrenador, self.nombreCompleto, self.posicion, self.twitter)
         
     

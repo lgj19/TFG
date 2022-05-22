@@ -11,7 +11,7 @@ class database:
   def __init__(self):
     self.connector = mysql.connector.connect(
       host ="localhost",
-      user ="lgj19",
+      user ="root",
       passwd ="414ee7d2",
       database = "acb"
     )
@@ -64,6 +64,14 @@ class database:
       FROM teamName JOIN team ON team.id = team_id
       WHERE season={}
     '''.format(temporada)
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
+  
+  def getEquipoPorNombre(self, nombre, temporada):
+    query = ''' SELECT *
+      FROM teamName JOIN team ON team.id = team_id
+      WHERE name ="{}" AND season ={}'''.format(nombre, temporada)
     self.cursor.execute(query)
     self.result = self.cursor.fetchall()
     return self.result

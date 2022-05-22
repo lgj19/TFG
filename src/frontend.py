@@ -1,11 +1,12 @@
 from tkinter import *
 from tkinter.ttk import Combobox
 import entities.Plantilla as Plantilla
-import pruebaMysql as mysql
-import entities.Equipo as Equipo
+from generarArticulo import *
 import math
 
-db = mysql.database() #La base de datos
+from querysMysql import *
+
+
 equipos = [] #Equipos seleccionados del partido
 plantillaSelected = Plantilla.Plantilla([-1,False,"nada"]) #Plantilla de redacción
 
@@ -18,40 +19,30 @@ def agregarEquipos(event):
     cboxEquipoLocal.set(''); cboxEquipoVisitante.set('')
     temporada = tvarTemporada.get()[:4]
     nombreEquipos = []
-    cursor = mysql.database.getEquiposPorTemporada(db, temporada)
-    
-    for row in cursor:
-        equipo = Equipo.Equipo(row)
-        equipos.append(equipo)
+
+    equipos = recuEqsTemp(temporada)
     
     for equipo in equipos:
         nombreEquipos.append(equipo.nombre)
     cboxEquipoLocal['values'] = cboxEquipoVisitante['values'] = nombreEquipos
 
 def cargarPlantillasBD():
-    plantillas = []
+    plantillas = recuPlantillas()
     nombrePlantillas = []
-    
-    for row in mysql.database.getPlantillas(db):
-        plantillas.append(Plantilla.Plantilla(row))
-        
+            
     for plantilla in plantillas:
         nombrePlantillas.append(plantilla.titulo)
         
     cboxPlantilla['values'] = nombrePlantillas
 
 def seleccionarPlantilla(event):
-    for row in mysql.database.getPlantilla(db, tvarPlantilla.get()):
-        plantillaSelected.id = row[0]
-        plantillaSelected.es_semilla = row[1]
-        plantillaSelected.titulo = row[2]
-    
-    for row in mysql.database.getParrafos(db, plantillaSelected.id):
-        plantillaSelected.parrafos.append(Plantilla.Parrafo(row))
+    global plantillaSelected
+    plantillaSelected = recuPlantilla(tvarPlantilla.get())
     iniciarBotonesCheck()
+    
 
 def iniciarBotonesCheck():
-    global arrChB, arrVarChB;
+    global arrChB, arrVarChB
     #CheckButtons --> párrafos
     Label(ws, text="Seleccionar párrafos: ", pady=5, padx=15).grid(row=6, column=0)
     
@@ -70,10 +61,13 @@ def iniciarBotonesCheck():
     
 
 def generarTexto():
-    parrafosLen = len(plantillaSelected.parrafos)
-    for i in range(parrafosLen):
-        if(arrVarChB[i].get()):
-            print(plantillaSelected.parrafos[i]) 
+    nombreEqL = tvarEquipoLocal.get()
+    nombreEqV = tvarEquipoVisitante.get()
+    tituloPlant = tvarPlantilla.get()
+    temporada = tvarTemporada.get()[:4]
+
+    articuloFinal = inyeccionPlantilla(nombreEqL, nombreEqV, temporada, tituloPlant)
+    print("Generación de texto...")
         
     
     

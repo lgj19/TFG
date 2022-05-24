@@ -1,10 +1,18 @@
-from tkinter import *
+import sys
 from tkinter.ttk import Combobox
-import entities.Plantilla as Plantilla
-from generarArticulo import *
+from tkinter import *
 import math
+import codecs
 
+sys.path.insert(0, '../entities')
+sys.path.insert(1, '../database')
+sys.path.insert(2, '../../src')
+from generarArticulo import *
+from Plantilla import *
 from querysMysql import *
+
+
+
 
 
 equipos = [] #Equipos seleccionados del partido
@@ -44,7 +52,7 @@ def seleccionarPlantilla(event):
 def iniciarBotonesCheck():
     global arrChB, arrVarChB
     #CheckButtons --> párrafos
-    Label(ws, text="Seleccionar párrafos: ", pady=5, padx=15).grid(row=6, column=0)
+    Label(ws, font="Georgia 11", text="Seleccionar párrafos: ", pady=5, padx=15).grid(row=6, column=0)
     
     arrParrafosLen = len(plantillaSelected.parrafos)
     
@@ -53,7 +61,7 @@ def iniciarBotonesCheck():
     for i in range(len(arrVarChB)): arrVarChB[i] = IntVar()
     
     for i in range(arrParrafosLen):
-        arrChB[i] = Checkbutton(ws, text=plantillaSelected.parrafos[i].tipoParrafo,
+        arrChB[i] = Checkbutton(ws, font="Georgia 10", text=plantillaSelected.parrafos[i].tipoParrafo,
                                 variable=arrVarChB[i], onvalue=1, offvalue=0)
     
     for i in range(len(arrChB)):
@@ -67,6 +75,11 @@ def generarTexto():
     temporada = tvarTemporada.get()[:4]
 
     articuloFinal = inyeccionPlantilla(nombreEqL, nombreEqV, temporada, tituloPlant)
+
+    pathFile = "../textosGenerados/{}.txt".format(entry_nombreArticulo)
+    file = codecs.open(pathFile, 'w', 'utf-8')
+    file.write("El artículo")
+    file.close()
     print("Generación de texto...")
         
     
@@ -74,40 +87,38 @@ def generarTexto():
 
 
 ws = Tk()
-ws.geometry("550x550")
-ws.title("Generador de textos de la ACB")
-#ws.grid_rowconfigure(0, weight=1)
-#ws.grid_columnconfigure(0, weight=1)
+ws.geometry("700x550")
+ws.title("Generador de párrafos de la ACB")
 
 #Título de la sección del partido
 Label(ws, text="Datos del partido", font="Georgia 16 bold", pady=15).grid(row=0, column=1)
 
 #Nombre del combobox para seleccionar el año de la temporada
-lb_temporada = Label(ws, text="Temporada: ", pady=5, padx=15).grid(row=1, column=0)
+lb_temporada = Label(ws, font="Georgia 11", text="Temporada: ", pady=5, padx=15).grid(row=1, column=0)
 
 #Combobox de la temporada con los años y el manejador al seleccionar un año
 tvarTemporada = StringVar()
-cboxTemporada = Combobox(ws, textvariable=tvarTemporada)
+cboxTemporada = Combobox(ws, font="Georgia 11", textvariable=tvarTemporada)
 cboxTemporada.grid(row=1, column=1)
 cboxTemporada.bind('<<ComboboxSelected>>', agregarEquipos)
 cboxTemporada['state'] = 'readonly'
 cboxTemporada['values'] = TEMPORADAS
 
 #Selección del equipo local
-lbl_equipoLocal = Label(ws, text="Equipo local: ", pady=5, padx=15).grid(row=2, column=0)
+lbl_equipoLocal = Label(ws, font="Georgia 11", text="Equipo local: ", pady=5, padx=15).grid(row=2, column=0)
 
 #Combobox del equipo local
 tvarEquipoLocal = StringVar()
-cboxEquipoLocal = Combobox(ws, textvariable=tvarEquipoLocal, width=35)
+cboxEquipoLocal = Combobox(ws, font="Georgia 11", textvariable=tvarEquipoLocal, width=35)
 cboxEquipoLocal.grid(row=2, column=1)
 cboxEquipoLocal['state'] = 'readonly'
 
 #Selección del equipo visitante
-lbl_equipoVisitante = Label(ws, text="Equipo visitante: ", pady=5, padx=15).grid(row=3, column=0)
+lbl_equipoVisitante = Label(ws, font="Georgia 11", text="Equipo visitante: ", pady=5, padx=15).grid(row=3, column=0)
 
 #Combobox del equipo visitante
 tvarEquipoVisitante = StringVar()
-cboxEquipoVisitante = Combobox(ws, textvariable=tvarEquipoVisitante, width=35)
+cboxEquipoVisitante = Combobox(ws, font="Georgia 11", textvariable=tvarEquipoVisitante, width=35)
 cboxEquipoVisitante.grid(row=3, column=1)
 cboxEquipoVisitante['state'] = 'readonly'
 
@@ -115,11 +126,11 @@ cboxEquipoVisitante['state'] = 'readonly'
 Label(ws, text="Selección de párrafos", font="Georgia 16 bold", pady=30).grid(row=4, column=1)
 
 #Label plantilla
-lbl_plantilla = Label(ws, text="Plantilla: ", pady=5, padx=15).grid(row=5, column=0)
+lbl_plantilla = Label(ws, font="Georgia 11", text="Plantilla: ", pady=5, padx=15).grid(row=5, column=0)
 
 #ComboBox plantilla
 tvarPlantilla = StringVar()
-cboxPlantilla = Combobox(ws, textvariable=tvarPlantilla, width=35, postcommand=cargarPlantillasBD)
+cboxPlantilla = Combobox(ws, font="Georgia 11", textvariable=tvarPlantilla, width=35, postcommand=cargarPlantillasBD)
 cboxPlantilla.grid(row=5, column=1)
 cboxPlantilla.bind('<<ComboboxSelected>>', seleccionarPlantilla)
 cboxPlantilla['state'] = 'readonly'
@@ -127,7 +138,11 @@ arrChB = []
 arrVarChB = []
 
 #Botón de Generar plantilla
-btnGenerarPlantilla = Button( text ="Generar texto", command = generarTexto)
-btnGenerarPlantilla.grid(row=15, column=1, pady=15)
+btnGenerarPlantilla = Button( text ="Generar texto", font="Georgia 11" , command = generarTexto)
+btnGenerarPlantilla.grid(row=16, column=1, pady=15)
 
+#Label plantilla
+lbl_nombreArticulo = Label(ws, font="Georgia 11", text="Nombre del artículo: ", pady=25, padx=15).grid(row=15, column=0)
+entry_nombreArticulo = Entry(ws, justify="center", width=40, font="Georgia 11")
+entry_nombreArticulo.grid(row=15, column=1)
 ws.mainloop()

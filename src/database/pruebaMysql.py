@@ -96,8 +96,65 @@ class database:
       FROM parrafo
       WHERE id_plantilla = {}
     '''.format(idPlantilla)
+    
     self.cursor.execute(query)
     self.result = self.cursor.fetchall()
     return self.result
-    
+
+  def insertPlantilla(self, titulo):
+    query = "INSERT INTO plantilla (titulo) VALUES (%s)"
+    val = [titulo]
+
+    self.cursor.execute(query, val)
+    self.connector.commit()
+    self.result = self.cursor.rowcount
+    return self.result
+
+  def existsPlantilla(self, titulo):
+    query = "SELECT COUNT(*) FROM plantilla WHERE titulo=%s"
+    val = [titulo]
+
+    self.cursor.execute(query, val)
+    self.result = self.cursor.fetchone()[0]
+    return self.result
+  
+  def insertParrafos(self, parrafos, idPlantilla):
+    query = ''' INSERT INTO parrafo
+      (id_plantilla, contenido, tipo_parrafo)
+      VALUES
+      (%s, %s, %s)
+      '''
+    val = []
+
+    for p in parrafos:
+      val.append([idPlantilla, p.contenido, p.tipoParrafo])
+
+    self.cursor.executemany(query, val)
+    self.connector.commit()
+    self.result = self.cursor.rowcount
+    return self.result
+
+  def insertParrafo(self, titulo, contenido, idPlantilla):
+    query = ''' INSERT INTO parrafo
+      (tipo_parrafo, contenido, id_plantilla)
+      VALUES
+      (%s, %s, %s)
+      '''
+    val = [titulo, contenido, idPlantilla]
+
+    self.cursor.execute(query, val)
+    self.connector.commit()
+    self.result = self.cursor.rowcount
+    return self.result
+
+  def existsParrafo(self, tipoParrafo, idPlantilla):
+    query = ''' SELECT COUNT(*) FROM parrafo
+      WHERE id_plantilla=%s AND tipo_parrafo=%s
+      '''
+    val = [idPlantilla, tipoParrafo]
+
+    self.cursor.execute(query, val)
+    self.result = self.cursor.fetchone()[0]
+    return self.result
+
     

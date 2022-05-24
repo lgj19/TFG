@@ -6,8 +6,7 @@ class Plantilla:
 
     def __init__(self, row):
         self.id = row[0]
-        self.semilla = row[1]
-        self.titulo = row[2]
+        self.titulo = row[1]
 
     def __str__(self):
         parrafos = ""
@@ -17,10 +16,9 @@ class Plantilla:
             
         return ''' Titulo: {}
             ID: {}
-            Es semilla: {}
             Párrafos: 
                 {}
-        '''.format(self.titulo, self.id, self.es_semilla, parrafos)
+        '''.format(self.titulo, self.id, parrafos)
     
 class Parrafo:
     id = -1

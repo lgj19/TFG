@@ -105,6 +105,8 @@ def recuPlantilla(tituloPlantilla):
     for row in db.getParrafos(plantilla.id):
       plantilla.parrafos.append(Plantilla.Parrafo(row))
 
+
+    
   del db
   return plantilla
 

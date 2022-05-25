@@ -3,7 +3,6 @@
  - Hacer UNIQUE el tipoParrafo de parrafo
 
 
-
 ----------- generarArticulo.py ----------- 
 
  - Rellenar los párrafos que se han seleccionado en rellenarParrafos.py
@@ -11,7 +10,6 @@
 
 ----------- rellenarParrafos.py ----------- 
 
- - Crear un archivo .txt con el título de cada párrafo seguido del contenido.
  ¿-? Introducir la ruta donde se desea descargar el archivo
 
 

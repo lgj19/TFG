@@ -1,4 +1,8 @@
+from docx import Document
+from docxcompose.composer import Composer
 import sys
+
+from tkinter import messagebox
 from tkinter.ttk import Combobox
 from tkinter import *
 import math
@@ -67,21 +71,35 @@ def iniciarBotonesCheck():
     for i in range(len(arrChB)):
         arrChB[i].grid(row=7+math.trunc(i/3), column=i%3)
     
+def seleccionartiposParrafos():
+    global arrChB, arrVarChB
+    tiposParrafos = []
+    for i in range(len(arrVarChB)):
+        if(arrVarChB[i].get() == 1):
+            tiposParrafos.append(arrChB[i].cget("text"))
+    return tiposParrafos
 
 def generarTexto():
     nombreEqL = tvarEquipoLocal.get()
     nombreEqV = tvarEquipoVisitante.get()
     tituloPlant = tvarPlantilla.get()
     temporada = tvarTemporada.get()[:4]
-
-    articuloFinal = inyeccionPlantilla(nombreEqL, nombreEqV, temporada, tituloPlant)
-
-    pathFile = "../textosGenerados/{}.txt".format(entry_nombreArticulo)
-    file = codecs.open(pathFile, 'w', 'utf-8')
-    file.write("El artículo")
-    file.close()
-    print("Generación de texto...")
-        
+    nombreArticulo = entry_nombreArticulo.get()
+    tiposParrafos = seleccionartiposParrafos()
+    
+    
+    articuloFinal = Document()
+    articuloFinal.add_heading(nombreArticulo.upper())
+    composer = Composer(articuloFinal)
+    
+    parrafos = inyeccionPlantilla(nombreEqL, nombreEqV, temporada, tituloPlant, tiposParrafos, plantillaSelected)
+    composer.append(parrafos)
+    
+    pathFile = "../textosGenerados/{}.docx".format(nombreArticulo)
+    composer.save(pathFile)
+    
+    informe  = getattr(messagebox, 'show{}'.format('info'))
+    informe("Informe", "Artículo generado correctamente.")
     
     
 

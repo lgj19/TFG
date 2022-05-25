@@ -1,4 +1,4 @@
-
+from docx import Document
 from entities.Equipo import Equipo
 from querysMysql import *
 
@@ -16,15 +16,14 @@ dictMVP1P = {}
 dictMVP2P = {}
 
 
-def inyeccionPlantilla(nombreEqL, nombreEqV, temporada, nombrePlant):
+def inyeccionPlantilla(nombreEqL, nombreEqV, temporada, nombrePlant, tiposParrafos, plantilla):
     #Recuperar equipos
     eqL = recuEqNombre(nombreEqL, temporada)
     eqV = recuEqNombre(nombreEqV, temporada)
     #Recuperar plantilla y sus párrafos
-    plantilla = recuPlantilla(nombrePlant)
+    #plantilla = recuPlantilla(nombrePlant)
     #Recuperamos el partido
     partido = recuPartido(eqL.id, eqV.id, temporada)
-    print(partido)
     #Recuperamos los jugadores de los equipos
     jugsEqL = recuJugsEqL(eqL.id, partido.id)
     jugsEqV = recuJugsEqV(eqV.id, partido.id)
@@ -32,19 +31,30 @@ def inyeccionPlantilla(nombreEqL, nombreEqV, temporada, nombrePlant):
     #Rellenar los diccionarios
     rellenarDicts(eqL, eqV, partido, jugsEqL, jugsEqV)
     
-    inyeccionParrafos(plantilla)
+    return inyeccionParrafos(plantilla, tiposParrafos)
 
 
 
-def inyeccionParrafos(plantilla):
+def inyeccionParrafos(plantilla, tiposParrafos):
     global dictEqG, dictEqP, dictPartido, dictMVP1G, dictMVP2G, dictMVP1P, dictMVP2P
     dicts = [dictEqG, dictEqP, dictPartido,dictMVP1G, dictMVP2G, dictMVP1P, dictMVP2P]
+    
+    articuloFinal = Document()
+    newParrafo = ""
 
     for parrafo in plantilla.parrafos:
-        for d in dicts:
-            for key, val in d.items():
-                parrafo.contenido = parrafo.contenido.replace(key, str(val))
-        print(parrafo.contenido)
+        if parrafo.tipoParrafo in tiposParrafos:
+            #articuloFinal += parrafo.tipoParrafo + "\n\n"
+            articuloFinal.add_heading(parrafo.tipoParrafo, level=2)
+            newParrafo = parrafo.contenido
+            for d in dicts:
+                for key, val in d.items():
+                    newParrafo = newParrafo.replace(key, str(val))
+            #articuloFinal += newParrafo + "\n\n\n"
+            articuloFinal.add_paragraph(newParrafo)
+
+    return articuloFinal
+
         
 
 

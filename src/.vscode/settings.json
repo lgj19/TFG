@@ -1,6 +1,7 @@
 {
     "python.analysis.extraPaths": [
         "./database",
-        "./entities"
+        "./entities",
+        "./GLN"
     ]
 }

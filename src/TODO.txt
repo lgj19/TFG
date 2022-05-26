@@ -1,20 +1,14 @@
 ----------- BASE DE DATOS ----------- 
- - Hacer UNIQUE el título de plantilla
- - Hacer UNIQUE el tipoParrafo de parrafo
 
 
 ----------- generarArticulo.py ----------- 
 
- - Rellenar los párrafos que se han seleccionado en rellenarParrafos.py
-
 
 ----------- rellenarParrafos.py ----------- 
-
- ¿-? Introducir la ruta donde se desea descargar el archivo
 
 
 ----------- generarParrafo.py -----------
 
- - Realizar la función con GLN de generar el párrafo
+ - Realizar la función con GLN para sugerir modificaciones en el párrafo
 
  

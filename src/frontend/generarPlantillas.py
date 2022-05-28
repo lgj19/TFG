@@ -33,12 +33,12 @@ def crearPlantilla():
     else:
         mensajeAdvertencia("Ya existe una plantilla con ese nombre.")
 
-    tb_tituloPlantilla.delete(0, 'end')
+    tb_tituloPlantilla.delete('end', 0)
 
 
 def crearParrafo():
     tituloParrafo = tb_tituloParrafo.get()
-    
+
     if(existeParrafo(tituloParrafo, plantillaSelected.id) == 0):
         insertaParrafo(tituloParrafo, 
           tb_introducirParrafo.get("0.0", END), plantillaSelected.id)
@@ -46,8 +46,8 @@ def crearParrafo():
     else:
         mensajeAdvertencia("Ya existe un párrafo con ese nombre.")
     
-    tb_tituloParrafo.delete(0, 'end')
-    tb_introducirParrafo.delete(0, 'end')
+    tb_tituloParrafo.delete('end', 0)
+    tb_introducirParrafo.delete('1.0', END)
 
 def cargarPlantillasBD():
     plantillas = recuPlantillas()

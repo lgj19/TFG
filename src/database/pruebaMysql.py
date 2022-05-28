@@ -101,6 +101,14 @@ class database:
     self.result = self.cursor.fetchall()
     return self.result
 
+  def getParrafo(self, tipoParrafo):
+    query = "SELECT * FROM parrafo WHERE tipo_parrafo = %s"
+    val = [tipoParrafo]
+    
+    self.cursor.execute(query, val)
+    self.result = self.cursor.fetchall()
+    return self.result
+
   def insertPlantilla(self, titulo):
     query = "INSERT INTO plantilla (titulo) VALUES (%s)"
     val = [titulo]
@@ -141,6 +149,18 @@ class database:
       (%s, %s, %s)
       '''
     val = [titulo, contenido, idPlantilla]
+
+    self.cursor.execute(query, val)
+    self.connector.commit()
+    self.result = self.cursor.rowcount
+    return self.result
+
+  def updateParrafo(self, titulo, contenido, idPlantilla):
+    query = ''' UPDATE parrafo
+      SET tipo_parrafo=%s, contenido=%s, id_plantilla=%s
+      WHERE tipo_parrafo=%s
+      '''
+    val = [titulo, contenido, idPlantilla, titulo]
 
     self.cursor.execute(query, val)
     self.connector.commit()

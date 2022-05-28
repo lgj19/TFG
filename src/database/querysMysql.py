@@ -105,8 +105,6 @@ def recuPlantilla(tituloPlantilla):
     for row in db.getParrafos(plantilla.id):
       plantilla.parrafos.append(Plantilla.Parrafo(row))
 
-
-    
   del db
   return plantilla
 
@@ -155,6 +153,15 @@ def insertaParrafo(titulo, contenido, idPlantilla):
   del db
   return parrafo
 
+def modificaParrafo(titulo, contenido, idPlantilla):
+  db = MySQL.database()
+
+  parrafo = db.updateParrafo(titulo, contenido, idPlantilla)
+  
+  del db
+  return parrafo
+
+
 def existeParrafo(tipo, idPlantilla):
   db = MySQL.database()
   
@@ -163,14 +170,26 @@ def existeParrafo(tipo, idPlantilla):
   del db
   return parrafo
 
-#Recuperar plantillas:
+#Recuperar parrafos:
 def recuParrafos(idPlantilla):
   db = MySQL.database()
   parrafos = []
 
   for row in db.getParrafos(idPlantilla):
-    parrafo = Plantilla.Plantilla(row)
+    parrafo = Plantilla.Parrafo(row)
     parrafos.append(parrafo)
   
   del db
   return parrafos
+
+
+#Recuperar parrafos:
+def recuParrafo(tipoParrafo):
+  db = MySQL.database()
+  parrafo = []
+
+  for row in db.getParrafo(tipoParrafo):
+    parrafo = Plantilla.Parrafo(row)
+  
+  del db
+  return parrafo

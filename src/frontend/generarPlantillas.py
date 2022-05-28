@@ -10,7 +10,7 @@ sys.path.insert(0, '../entities')
 sys.path.insert(1, '../database')
 sys.path.insert(2, '../../src')
 from generarArticulo import *
-from querysMysql import *
+from recuEntitiesBD import *
 
 
 plantillaSelected = []

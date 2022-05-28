@@ -1,195 +1,180 @@
-import pruebaMysql as MySQL
-import entities.Equipo as Equipo
-import entities.Jugador as Jugador
-import entities.Partido as Partido
-import entities.Plantilla as Plantilla
+# importing required libraries
+import mysql.connector
 
-#db = MySQL.database() #Crearla en cada función y cerrar conexión
-
-#recuperar el equipo local
-def recuEqLocal(idEqL, tempo):
-  db = MySQL.database()
-  equipoLocal = []
-
-  for row in db.getEquipo(idEqL, tempo):
-    equipoLocal = Equipo.Equipo(row)
-
-  del db
-  return equipoLocal
-
-
-#Recuperar el equipo visitante
-def recuEqVisi(idEqV, tempo):
-  db = MySQL.database()
-  equipoVisitante = []
-
-  for row in db.getEquipo(idEqV, tempo):
-    equipoVisitante = Equipo.Equipo(row)
-
-  del db
-  return equipoVisitante
-
-
-#Recuperar partido
-def recuPartido(idEqL, idEqV, tempo):
-  db = MySQL.database()
-  partido = []
-
-  for row in db.getPartido(idEqL, idEqV, tempo):
-    partido = Partido.Partido(row)
-
-  del db
-  return partido
-
-
-#Recuperar los jugadores del equipo local
-def recuJugsEqL(idEqL, idPartido):
-  db = MySQL.database()
-  jugadoresLocales = []
-
-  for row in db.getJugadores(idEqL, idPartido):
-    jugador = Jugador.Jugador(row)
-    jugadoresLocales.append(jugador)
+class database:
+      
+  connector = None
+  cursor = None
+  result = None
+  query = ""
   
-  del db
-  return jugadoresLocales
+  def __init__(self):
+    self.connector = mysql.connector.connect(
+      host ="localhost",
+      user ="root",
+      passwd ="414ee7d2",
+      database = "acb"
+    )
+    
+    self.cursor = self.connector.cursor()
+    
+    
+  def __del__(self):
+    self.connector.close()
+    
+    
+  def getEquipo(self, idTeam, season):
+    query = ''' SELECT * 
+      FROM teamName JOIN team ON team.id=team_id 
+      WHERE team.id={} AND season={}
+    '''.format(idTeam, season)
+    
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
   
-
-#Recuperar los jugadores del equipo visitante
-def recuJugsEqV(idEqV, idPartido):
-  db = MySQL.database()
-  jugadoresVisitantes = []
-
-  for row in db.getJugadores(idEqV, idPartido):
-    jugador = Jugador.Jugador(row)
-    jugadoresVisitantes.append(jugador)
-
-  del db
-  return jugadoresVisitantes
-
-
-#Recuperar equipos por temporada
-def recuEqsTemp(temporada):
-  db = MySQL.database()
-  equipos = []
-
-  for row in db.getEquiposPorTemporada(temporada):
-    equipo = Equipo.Equipo(row)
-    equipos.append(equipo)
-
-  del db
-  return equipos
-
-
-#Recuperar equipo por nombre y temporada
-def recuEqNombre(nombreEq, temporada):
-  db = MySQL.database()
-  equipo = []
-
-  for row in db.getEquipoPorNombre(nombreEq, temporada):
-      equipo = Equipo.Equipo(row)
-
-  del db
-  return equipo
-
-
-
-#Recuperar plantilla:
-def recuPlantilla(tituloPlantilla):
-  db = MySQL.database()
-  plantilla = []
-
-  for row in db.getPlantilla(tituloPlantilla):
-    plantilla = Plantilla.Plantilla(row)
-
-    for row in db.getParrafos(plantilla.id):
-      plantilla.parrafos.append(Plantilla.Parrafo(row))
-
-  del db
-  return plantilla
-
-
-#Recuperar plantillas:
-def recuPlantillas():
-  db = MySQL.database()
-  plantillas = []
-
-  for row in db.getPlantillas():
-    plantilla = Plantilla.Plantilla(row)
-    plantillas.append(plantilla)
   
-  del db
-  return plantillas
-
-def insertaPlantilla(titulo):
-  db = MySQL.database()
+  def getJugadores(self, idTeam, idGame):
+    query = ''' SELECT * 
+      FROM participant p JOIN actor ON actor.id = actor_id 
+      WHERE p.team_id={} AND p.game_id={}
+    '''.format(idTeam, idGame)
+    
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
   
-  plantilla = db.insertPlantilla(titulo)
+  def getPartido(self, idTeamLocal, idTeamVisi, temporada):
+    temporada = '"' + str(temporada) +'%"'
+    
+    query = ''' SELECT *
+      FROM game
+      WHERE team_home_id={} AND team_away_id={} 
+      AND competition_phase="regular" AND kickoff_time =
+        (SELECT MAX(kickoff_time) FROM game WHERE team_home_id={} AND team_away_id={} 
+         AND competition_phase="regular" AND kickoff_time LIKE {})
+    '''.format(idTeamLocal, idTeamVisi, idTeamLocal, idTeamVisi, temporada)
+    
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
   
-  del db
-  return plantilla
-
-def existePlantilla(titulo):
-  db = MySQL.database()
+  def getEquiposPorTemporada(self, temporada):
+    query = ''' SELECT *
+      FROM teamName JOIN team ON team.id = team_id
+      WHERE season={}
+    '''.format(temporada)
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
   
-  numPlantillas = db.existsPlantilla(titulo)
+  def getEquipoPorNombre(self, nombre, temporada):
+    query = ''' SELECT *
+      FROM teamName JOIN team ON team.id = team_id
+      WHERE name ="{}" AND season ={}'''.format(nombre, temporada)
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
   
-  del db
-  return int(numPlantillas)
-
-def insertaParrafos(parrafos, idPlantilla):
-  db = MySQL.database()
-
-  parrafos = db.insertParrafos(parrafos, idPlantilla)
+  def getPlantilla(self, titulo):
+    query = ''' SELECT *
+      FROM plantilla
+      WHERE titulo = "{}";
+    '''.format(titulo)
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
   
-  del db
-  return parrafos
-
-def insertaParrafo(titulo, contenido, idPlantilla):
-  db = MySQL.database()
-
-  parrafo = db.insertParrafo(titulo, contenido, idPlantilla)
+  def getPlantillas(self):
+    query = ''' SELECT * FROM plantilla '''
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
   
-  del db
-  return parrafo
+  def getParrafos(self, idPlantilla):
+    query = '''SELECT *
+      FROM parrafo
+      WHERE id_plantilla = {}
+    '''.format(idPlantilla)
+    
+    self.cursor.execute(query)
+    self.result = self.cursor.fetchall()
+    return self.result
 
-def modificaParrafo(titulo, contenido, idPlantilla):
-  db = MySQL.database()
+  def getParrafo(self, tipoParrafo):
+    query = "SELECT * FROM parrafo WHERE tipo_parrafo = %s"
+    val = [tipoParrafo]
+    
+    self.cursor.execute(query, val)
+    self.result = self.cursor.fetchall()
+    return self.result
 
-  parrafo = db.updateParrafo(titulo, contenido, idPlantilla)
+  def insertPlantilla(self, titulo):
+    query = "INSERT INTO plantilla (titulo) VALUES (%s)"
+    val = [titulo]
+
+    self.cursor.execute(query, val)
+    self.connector.commit()
+    self.result = self.cursor.rowcount
+    return self.result
+
+  def existsPlantilla(self, titulo):
+    query = "SELECT COUNT(*) FROM plantilla WHERE titulo=%s"
+    val = [titulo]
+
+    self.cursor.execute(query, val)
+    self.result = self.cursor.fetchone()[0]
+    return self.result
   
-  del db
-  return parrafo
+  def insertParrafos(self, parrafos, idPlantilla):
+    query = ''' INSERT INTO parrafo
+      (id_plantilla, contenido, tipo_parrafo)
+      VALUES
+      (%s, %s, %s)
+      '''
+    val = []
 
+    for p in parrafos:
+      val.append([idPlantilla, p.contenido, p.tipoParrafo])
 
-def existeParrafo(tipo, idPlantilla):
-  db = MySQL.database()
-  
-  parrafo = db.existsParrafo(tipo, idPlantilla)
-  
-  del db
-  return parrafo
+    self.cursor.executemany(query, val)
+    self.connector.commit()
+    self.result = self.cursor.rowcount
+    return self.result
 
-#Recuperar parrafos:
-def recuParrafos(idPlantilla):
-  db = MySQL.database()
-  parrafos = []
+  def insertParrafo(self, titulo, contenido, idPlantilla):
+    query = ''' INSERT INTO parrafo
+      (tipo_parrafo, contenido, id_plantilla)
+      VALUES
+      (%s, %s, %s)
+      '''
+    val = [titulo, contenido, idPlantilla]
 
-  for row in db.getParrafos(idPlantilla):
-    parrafo = Plantilla.Parrafo(row)
-    parrafos.append(parrafo)
-  
-  del db
-  return parrafos
+    self.cursor.execute(query, val)
+    self.connector.commit()
+    self.result = self.cursor.rowcount
+    return self.result
 
+  def updateParrafo(self, titulo, contenido, idPlantilla):
+    query = ''' UPDATE parrafo
+      SET tipo_parrafo=%s, contenido=%s, id_plantilla=%s
+      WHERE tipo_parrafo=%s
+      '''
+    val = [titulo, contenido, idPlantilla, titulo]
 
-#Recuperar parrafos:
-def recuParrafo(tipoParrafo):
-  db = MySQL.database()
-  parrafo = []
+    self.cursor.execute(query, val)
+    self.connector.commit()
+    self.result = self.cursor.rowcount
+    return self.result
 
-  for row in db.getParrafo(tipoParrafo):
-    parrafo = Plantilla.Parrafo(row)
-  
-  del db
-  return parrafo
+  def existsParrafo(self, tipoParrafo, idPlantilla):
+    query = ''' SELECT COUNT(*) FROM parrafo
+      WHERE id_plantilla=%s AND tipo_parrafo=%s
+      '''
+    val = [idPlantilla, tipoParrafo]
+
+    self.cursor.execute(query, val)
+    self.result = self.cursor.fetchone()[0]
+    return self.result
+
+    

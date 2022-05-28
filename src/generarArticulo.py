@@ -1,6 +1,6 @@
 from docx import Document
 from entities.Equipo import Equipo
-from querysMysql import *
+from recuEntitiesBD import *
 
 def concatenar(cadena, key, val):
     return cadena.replace(key, str(val))

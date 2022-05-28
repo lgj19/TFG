@@ -10,7 +10,7 @@ sys.path.insert(1, '../database')
 sys.path.insert(2, '../../src')
 sys.path.insert(3, '../GLN')
 from generarArticulo import *
-from querysMysql import *
+from recuEntitiesBD import *
 from GLNFunctions import *
 
 

@@ -13,7 +13,7 @@ sys.path.insert(1, '../database')
 sys.path.insert(2, '../../src')
 from generarArticulo import *
 from Plantilla import *
-from querysMysql import *
+from recuEntitiesBD import *
 
 
 

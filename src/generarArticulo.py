@@ -60,7 +60,8 @@ def inyeccionParrafos(plantilla, tiposParrafos):
 
 
 def rellenarDicts(eqL, eqV, partido, jugsEqL, jugsEqV):
-    eqG = []; eqP = []; global dictEqG, dictEqP, dictPartido, dictMVP1G, dictMVP2G, dictMVP1P, dictMVP2P
+    eqG = []; eqP = []; 
+    global dictEqG, dictEqP, dictPartido, dictMVP1G, dictMVP2G, dictMVP1P, dictMVP2P
 
     if(partido.puntosTotalLocal > partido.puntosTotalVisitante):
         eqG = eqL

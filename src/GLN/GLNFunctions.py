@@ -12,4 +12,6 @@ def obtenerSinonimos(palabra):
 
     return set(sinonimos)
 
-obtenerSinonimos('total')
+
+
+    

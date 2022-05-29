@@ -32,36 +32,44 @@ def seleccionarPlantilla(event):
 
 def generarSugerencias():
     sinonimos = []
-    cadena = "\t\t\tPALABRAS PARECIDAS:\n\n"
+    cadena = ""
     splitPalabras = tb_sinonimos.get().split(", ")
     
     for palabra in splitPalabras:
         sinonimos = obtenerSinonimos(palabra)
         cadena += palabra + ": { "
+       
         for sinonimo in sinonimos:
             cadena += sinonimo + ", "
+        
         if(cadena[-2] == ','):
             cadena = cadena[:-2]
-        cadena += "}\n\n"
+        cadena += " }\n\n"
+
     tb_sugerencias.insert("1.0", cadena)
 
     
+def informeOK(mensaje):
+    informe  = getattr(messagebox, 'show{}'.format('info'))
+    informe("Informe", mensaje)
+
+def advertencia(mensaje):
+    advertencia = getattr(messagebox, 'show{}'.format('warning'))
+    advertencia("Advertencia", mensaje)
+
 
 def guardarParrafo():
     tituloPlantilla = tvarPlantilla.get()
     plantilla = recuPlantilla(tituloPlantilla)
     tituloParrafo = tvarParrafo.get()
-
     contenidoParrafo = str(tb_introducirParrafo.get("0.0", END))
-    print("contenido del parrafo: " + contenidoParrafo)
+    
     rowsAffected = modificaParrafo(tituloParrafo, contenidoParrafo, plantilla.id)
     
     if(rowsAffected == 1):
-        informe  = getattr(messagebox, 'show{}'.format('info'))
-        informe("Informe", "Parrafo añadido correctamente.")
+        informeOK("Parrafo añadido correctamente.")
     else:
-        advertencia = getattr(messagebox, 'show{}'.format('warning'))
-        advertencia("Advertencia", "El párrafo no se ha podido añadir.")
+        advertencia("Error: El párrafo no se ha podido añadir.")
 
 def cargarParrafosBD():
     parrafos = recuParrafos(plantillaSelected.id)
@@ -120,7 +128,7 @@ frameCrearParrafo = Frame()
 frameCrearParrafo.pack(side=TOP)
 
 #Contenido del párrafo
-lb_introducirParrafo = Label(frameCrearParrafo, text="Contenido inicial del párrafo: ", font="Georgia 13")
+lb_introducirParrafo = Label(frameCrearParrafo, text="Contenido del párrafo: ", font="Georgia 13")
 lb_introducirParrafo.pack(pady=(10,0))
 tb_introducirParrafo = ScrolledText(frameCrearParrafo, font="Georgia 12", height=5, width=60, padx=40)
 tb_introducirParrafo.pack()
@@ -145,7 +153,7 @@ lb_sinonimos.pack(pady=(10,0), side=LEFT)
 
 tb_sinonimos = Entry(frameSinonimos, justify="center", width=50, font="Georgia 12", )
 tb_sinonimos.pack(pady=(10,0), side=LEFT)
-tb_sinonimos.insert(0,"Formato: adj1, adj2, ..., adjN")
+tb_sinonimos.insert(0,"palabra1, palabra2, ..., palabraN")
 
 #Botón para guardar párrafo en la plantilla
 btnGuardarParrafo = Button(ws, font="Georgia 13 bold", text ="Generar sugerencias", command = generarSugerencias)

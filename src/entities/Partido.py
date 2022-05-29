@@ -21,7 +21,9 @@ class Partido:
   puntosExtraVisitante = 0
   
   def __init__():
-    return     
+    return    
+    
+     
   def __init__(self, row):
       
     self.id = row[0]

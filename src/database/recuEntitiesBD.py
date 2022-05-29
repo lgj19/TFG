@@ -4,7 +4,6 @@ import entities.Jugador as Jugador
 import entities.Partido as Partido
 import entities.Plantilla as Plantilla
 
-#db = MySQL.database() #Crearla en cada función y cerrar conexión
 
 #recuperar el equipo local
 def recuEqLocal(idEqL, tempo):

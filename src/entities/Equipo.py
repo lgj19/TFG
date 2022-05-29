@@ -19,6 +19,7 @@ class Equipo:
         siglas: {} 
         año de fundación: {}
         temporada del nombre: {}
-        '''.format(self.nombre, self.id, self.siglas, self.anyoFundacion, self.temporada)
+        '''.format(self.nombre, self.id, self.siglas,
+          self.anyoFundacion, self.temporada)
 
     

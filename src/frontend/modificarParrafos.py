@@ -48,6 +48,15 @@ def generarSugerencias():
 
     tb_sugerencias.insert("1.0", cadena)
 
+def generarSugerenciasGPT3():
+    sinonimos = []
+    cadena = ""
+    splitPalabras = tb_sinonimos.get().split(", ")
+
+    for palabra in splitPalabras:
+        sinonimos = obtenerSinonimos(palabra)
+        cadena += palabra + ": " + sinonimos + ".\n"
+    tb_sugerencias.insert("1.0", cadena)
     
 def informeOK(mensaje):
     informe  = getattr(messagebox, 'show{}'.format('info'))

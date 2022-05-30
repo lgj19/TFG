@@ -1,10 +1,5 @@
-# TFG
+# TFG - Generación semiautomática de textos periodísticos de la liga ACB.
 Proyecto de GitHub para el TFG.
 
-## Analizar artículos
-El programa analizarArticulos.py se encargará de recibir un bloque de texto para poder
-analizarlo a nivel sintáctico y semántico.
-
-## Generar artículos
-El otro programa, generarArticulos.py, servirá para, dados unos valores de la BD, generar
-un artículo que relate en forma de crónica deportiva el resultado del partido en cuestión.
+## Generador de artículos
+El programa se encargará de redactar noticias a través de plantillas etiquetadas.

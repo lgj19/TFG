@@ -2,28 +2,26 @@ from docx import Document
 from entities.Equipo import Equipo
 from recuEntitiesBD import *
 
-def concatenar(cadena, key, val):
-    return cadena.replace(key, str(val))
 
 dictEqG = {}
 dictEqP = {}
 dictPartido = {}
-#dictsJugsG = {}
-#dictsJugsP = {}
 dictMVP1G = {}
 dictMVP2G = {}
 dictMVP1P = {}
 dictMVP2P = {}
 
 
-def inyeccionPlantilla(nombreEqL, nombreEqV, temporada, nombrePlant, tiposParrafos, plantilla):
+
+def inyeccionPlantilla(nombreEqL, nombreEqV, temporada, tiposParrafos, plantilla):
     #Recuperar equipos
     eqL = recuEqNombre(nombreEqL, temporada)
     eqV = recuEqNombre(nombreEqV, temporada)
-    #Recuperar plantilla y sus párrafos
-    #plantilla = recuPlantilla(nombrePlant)
+    print(eqL, eqV)
+
     #Recuperamos el partido
     partido = recuPartido(eqL.id, eqV.id, temporada)
+    print(partido)
     #Recuperamos los jugadores de los equipos
     jugsEqL = recuJugsEqL(eqL.id, partido.id)
     jugsEqV = recuJugsEqV(eqV.id, partido.id)
@@ -44,13 +42,11 @@ def inyeccionParrafos(plantilla, tiposParrafos):
 
     for parrafo in plantilla.parrafos:
         if parrafo.tipoParrafo in tiposParrafos:
-            #articuloFinal += parrafo.tipoParrafo + "\n\n"
             articuloFinal.add_heading(parrafo.tipoParrafo, level=2)
             newParrafo = parrafo.contenido
             for d in dicts:
                 for key, val in d.items():
                     newParrafo = newParrafo.replace(key, str(val))
-            #articuloFinal += newParrafo + "\n\n\n"
             articuloFinal.add_paragraph(newParrafo)
 
     return articuloFinal
@@ -58,11 +54,12 @@ def inyeccionParrafos(plantilla, tiposParrafos):
         
 
 
-
 def rellenarDicts(eqL, eqV, partido, jugsEqL, jugsEqV):
     eqG = []; eqP = []; 
     global dictEqG, dictEqP, dictPartido, dictMVP1G, dictMVP2G, dictMVP1P, dictMVP2P
 
+    #Asignamos los equipos ganadores y perdedores a partir de los puntos
+    #del equipo local y visitante
     if(partido.puntosTotalLocal > partido.puntosTotalVisitante):
         eqG = eqL
         eqP = eqV
@@ -72,16 +69,19 @@ def rellenarDicts(eqL, eqV, partido, jugsEqL, jugsEqV):
         eqP = eqL
         dictEqG['LOCAL'] = False; dictEqP['LOCAL'] = True
 
+    #Introducimos los datos para los equipos ganadores y perdedores
     dictEqG["NOMBRE_G"] = eqG.nombre; dictEqP["NOMBRE_P"] = eqP.nombre
     dictEqG["SIGLAS_G"] = eqG.siglas; dictEqP["SIGLAS_P"] = eqP.siglas
     dictEqG["FUND_G"] = eqG.anyoFundacion; dictEqP["FUND_P"] = eqP.anyoFundacion
     dictEqG["TEMP_G"] = eqG.temporada; dictEqP["TEMP_P"] = eqP.temporada
 
+    #Introducimos los datos genéricos del partido
     dictPartido["FASE_P"] = partido.faseCompeticion
     dictPartido["JORNADA_P"] = partido.jornada
     dictPartido["PABELLON"] = partido.pabellon
     dictPartido["PUBLICO"] = partido.publico
 
+    #Introducimos los puntos de cada equipo
     if(dictEqG['LOCAL']):
         dictPartido["PUNTOS_G"] = partido.puntosTotalLocal
         dictPartido["PUNTOS1Q_G"] = partido.puntos1QLocal
@@ -120,9 +120,9 @@ def rellenarDicts(eqL, eqV, partido, jugsEqL, jugsEqV):
     dictPartido["PUNTOS3Q_V"] = partido.puntos3QVisitante
     dictPartido["PUNTOS4Q_V"] = partido.puntos4QVisitante
     dictPartido["PUNTOSEQ_V"] = partido.puntosExtraVisitante
+    
     dictPartido["PUNTOS_1aPARTE_L"] = partido.puntos1QLocal + partido.puntos2QLocal
     dictPartido["PUNTOS_1aPARTE_V"] = partido.puntos1QVisitante + partido.puntos2QVisitante
-
     dictPartido["DIF_PUNTOS1Q"] = abs(partido.puntos1QLocal - partido.puntos1QVisitante)
     dictPartido["DIF_PUNTOS2Q"] = abs(partido.puntos2QLocal - partido.puntos2QVisitante)
     dictPartido["DIF_PUNTOS3Q"] = abs(partido.puntos3QLocal - partido.puntos3QVisitante)
@@ -188,16 +188,20 @@ def rellenarDicts(eqL, eqV, partido, jugsEqL, jugsEqV):
             dictPartido["NOMBRE_EQ_G"] = eqG.nombre
     
 
-    jugMVP1G = jugMVP2G = jugMVP1P = jugMVP2P = []
+    
 
     #Recuperamos los 2 mejores jugadores del partido de cada equipo
+    jugMVP1G = jugMVP2G = jugMVP1P = jugMVP2P = []
+
     jugMVP1G = jugsEqL[0]; jugMVP2G = jugsEqL[1]; jugMVP1P = jugsEqV[0]; jugMVP2P = jugsEqV[1]
+    
     for jug in jugsEqL:
         if(jug.valoracion > jugMVP1G.valoracion):
             jugMVP2G = jugMVP1G
             jugMVP1G = jug
         elif(jug.valoracion > jugMVP2G.valoracion and jug != jugMVP1G):
             jugMVP2G = jug
+
     for jug in jugsEqV:
         if(jug.valoracion > jugMVP1P.valoracion):
             jugMVP2P = jugMVP1P
@@ -215,8 +219,11 @@ def rellenarDicts(eqL, eqV, partido, jugsEqL, jugsEqV):
         jugMVP2P = aux
 
     #Introducimos los jugadores selecionados en los diccionarios
-    dictMVP1G = {"JUG_G1_APODO":jugMVP1G.nombre, "JUG_G1_NOMBRE_COMPLETO":jugMVP1G.nombreCompleto, "JUG_G1_PRIMER_APELLIDO":jugMVP1G.primerApellido, "JUG_G1_SEGUNDO_APELLIDO":jugMVP1G.segundoApellido,
-    "JUG_G1_NACION_SIGLAS": jugMVP1G.nacionalidad, "JUG_G1_LUGAR_NAC":jugMVP1G.lugarNacimiento, "JUG_G1_FECHA_NAC":jugMVP1G.fechaNacimiento[:10], "JUG_G1_POSICION":jugMVP1G,
+    dictMVP1G = {"JUG_G1_APODO":jugMVP1G.nombre, "JUG_G1_NOMBRE_COMPLETO":jugMVP1G.nombreCompleto,
+      "JUG_G1_PRIMER_APELLIDO":jugMVP1G.primerApellido,
+      "JUG_G1_SEGUNDO_APELLIDO":jugMVP1G.segundoApellido,
+      "JUG_G1_NACION_SIGLAS": jugMVP1G.nacionalidad, "JUG_G1_LUGAR_NAC":jugMVP1G.lugarNacimiento,
+      "JUG_G1_FECHA_NAC":jugMVP1G.fechaNacimiento[:10], "JUG_G1_POSICION":jugMVP1G,
     "JUG_G1_ALTURA": jugMVP1G.altura, "JUG_G1_DEBUT_ACB":jugMVP1G.debutACB[:10], "JUG_G1_TWITTER":jugMVP1G.twitter, "JUG_G1_DORSAL": jugMVP1G.dorsal, "JUG_G1_MIN":jugMVP1G.minutos,
     "JUG_G1_PUNTOS":jugMVP1G.puntosTotales, "JUG_G1_T2":jugMVP1G.tirosDe2, "JUG_G1_T3":jugMVP1G.tirosDe3, "JUG_G1_T1":jugMVP1G.tirosDe1, "JUG_G1_INT_T2":jugMVP1G.intentosDe2,
     "JUG_G1_INT_T3":jugMVP1G.intentosDe3, "JUG_G1_INT_T1":jugMVP1G.intentosDe1, "JUG_G1_REB_DEF":jugMVP1G.rebotesDefensivos, "JUG_G1_REB_OF":jugMVP1G.rebotesOfensivos,
@@ -287,12 +294,16 @@ def rellenarDicts(eqL, eqV, partido, jugsEqL, jugsEqV):
     porcentajeDe2 = tirosDe2 / intentosDe2 * 100
     porcentajeDe3 = tirosDe3 / intentosDe3 * 100
 
-    dictEqG.update({"REBOTES_OF_G":rebotesOf, "REBOTES_DEF_G":rebotesDef, "FALTAS_G":faltas,
-    "FALTAS_RECIBIDAS_G":faltasRecibidas, "TAPONES_G":tapones, "TAPONES_RECIBIDOS_G":taponesRecibidos,
-    "CONTRAATAQUES_G":contraataques, "ASISTENCIAS_G":asistencias, "PERDIDAS_G":perdidas,"VALORACION_G":valoracion,
-    "ROBOS_G":robos, "TL_TIRADOS_G":intentosDe1, "TL_ANOTADOS_G":tirosDe1, "PORCENTAJE_TL_G":porcentajeDe1,
-    "T2_TIRADOS_G":intentosDe2, "T2_ANOTADOS_G":tirosDe2, "PORCENTAJE_T2_G":porcentajeDe2,
-    "T3_TIRADOS_G":intentosDe3, "T3_ANOTADOS_G":tirosDe3, "PORCENTAJE_T3_G":porcentajeDe3})
+    dictEqG.update({"REBOTES_OF_G":rebotesOf, "REBOTES_DEF_G":rebotesDef,
+      "FALTAS_G":faltas,
+      "FALTAS_RECIBIDAS_G":faltasRecibidas, "TAPONES_G":tapones, 
+      "TAPONES_RECIBIDOS_G":taponesRecibidos,
+      "CONTRAATAQUES_G":contraataques, "ASISTENCIAS_G":asistencias,
+      "PERDIDAS_G":perdidas,"VALORACION_G":valoracion,
+      "ROBOS_G":robos, "TL_TIRADOS_G":intentosDe1,
+      "TL_ANOTADOS_G":tirosDe1, "PORCENTAJE_TL_G":porcentajeDe1,
+      "T2_TIRADOS_G":intentosDe2, "T2_ANOTADOS_G":tirosDe2, "PORCENTAJE_T2_G":porcentajeDe2,
+      "T3_TIRADOS_G":intentosDe3, "T3_ANOTADOS_G":tirosDe3, "PORCENTAJE_T3_G":porcentajeDe3})
     
     valoracion = 0; rebotesOf = 0; rebotesDef = 0; robos = 0; perdidas = 0; asistencias = 0
     tapones = 0; taponesRecibidos = 0; faltas = 0; faltasRecibidas = 0; contraataques = 0

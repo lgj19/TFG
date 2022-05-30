@@ -26,7 +26,7 @@ TEMPORADAS = ('1994/95', '1995/96', '1996/97', '1997/98', '1998/99', '1999/00', 
               '2003/04', '2004/05', '2005/06', '2006/07', '2007/08', '2008/09', '2009/10', '2010/11', '2011/12',
               '2012/13', '2013/14', '2014/15', '2015/16', '2016/17') #Las temporadas de la liga ACB
 
-def agregarEquipos():
+def agregarEquipos(event):
     equipos = []
     nombreEquipos = []
     cboxEquipoLocal.set(''); cboxEquipoVisitante.set('')
@@ -99,8 +99,7 @@ def generarTexto():
     articuloFinal.add_heading(nombreArticulo.upper())
     composer = Composer(articuloFinal)
     
-    parrafos = inyeccionPlantilla(nombreEqL, nombreEqV,
-                 temporada, tituloPlant, tiposParrafos, plantillaSelected)
+    parrafos = inyeccionPlantilla(nombreEqL, nombreEqV, temporada, tiposParrafos, plantillaSelected)
     composer.append(parrafos)
     
     pathFile = "../textosGenerados/{}.docx".format(nombreArticulo)
